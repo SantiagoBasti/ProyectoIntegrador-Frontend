@@ -1,0 +1,30 @@
+:root {
+  --primary-color: rgb(255,255,255);
+  --secundary-color: rgb(0,0,0);
+  --terciary-color: rgb(218,54,74);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+}
+
+.main-container {
+  flex: 1;
+  max-width: 1240px;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+}
