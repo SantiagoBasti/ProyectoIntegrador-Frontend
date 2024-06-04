@@ -1,0 +1,14 @@
+.main-carousel{
+    height: 450px;
+    overflow: hidden;
+    z-index: 0;
+  }
+  .main-carousel .carousel-item img{
+  height: 450px;
+  width: 100%;
+  object-fit: cover;
+  }
+  .banner-info{
+  background-color: rgba(0, 0, 0, 0.286);
+  border-radius: 20px;
+  }
