@@ -13,38 +13,34 @@ export default function Header() {
     };
 
     return (
-        <>
-            <header>
+        <header>
             <img src="https://i.pinimg.com/originals/4f/f5/09/4ff509a7f661b99574cb6b0d86e14232.png" alt="" />
-                <nav className={`header-nav ${menuOpen ? 'open' : ''}`}>
-                    <div className={`nav-links ${menuOpen ? 'open' : ''}`}>
-                        <NavLink to="/" className="nav-link" onClick={toggleMenu}>
-                            Home
+            <nav className={`header-nav ${menuOpen ? 'open' : ''}`}>
+                <NavLink to="/" className="nav-link" onClick={toggleMenu}>
+                    Home
+                </NavLink>
+                <NavLink to="/register" className="nav-link" onClick={toggleMenu}>
+                    Registro
+                </NavLink>
+                {isAdmin && (
+                    <>
+                        <NavLink to="/admin-product" className="nav-link" onClick={toggleMenu}>
+                            Admin Product
                         </NavLink>
-                        <NavLink to="/register" className="nav-link" onClick={toggleMenu}>
-                            Registro
+                        <NavLink to="/admin-user" className="nav-link" onClick={toggleMenu}>
+                            Admin Users
                         </NavLink>
-                        {isAdmin && (
-                            <>
-                                <NavLink to="/admin-product" className="nav-link" onClick={toggleMenu}>
-                                    Admin Product
-                                </NavLink>
-                                <NavLink to="/admin-user" className="nav-link" onClick={toggleMenu}>
-                                    Admin Users
-                                </NavLink>
-                            </>
-                        )}
-                    </div>
-                </nav>
-
+                    </>
+                )}
+            </nav>
+            <div className="right-section">
                 <div className="menu-icon" onClick={toggleMenu}>
                     {menuOpen ? <FontAwesomeIcon icon={faTimes} /> : <FontAwesomeIcon icon={faBars} />}
                 </div>
-
                 <div className="user-info">
                     <FontAwesomeIcon icon={faCartShopping} />
                 </div>
-            </header>
-        </>
+            </div>
+        </header>
     );
 }
