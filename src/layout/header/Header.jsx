@@ -5,8 +5,8 @@ import { faCartShopping, faBars, faTimes } from "@fortawesome/free-solid-svg-ico
 import "./Header.css";
 
 export default function Header() {
-    const isAdmin = true;
     const [menuOpen, setMenuOpen] = useState(false);
+    const isAdmin = true;
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
