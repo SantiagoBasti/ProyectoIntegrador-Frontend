@@ -21,7 +21,7 @@ export default function Register() {
                 reset();
             });
         } catch (error) {
-            console.error('Error creating user:', error);
+            console.error(error);
         }
     }
 
