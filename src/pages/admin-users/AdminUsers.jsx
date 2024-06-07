@@ -6,7 +6,6 @@ import './AdminUsers.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencil } from '@fortawesome/free-solid-svg-icons';
 import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
-import DateInput from '../../services/utils/Dateinput'
 
 const URL = "https://665e339a1e9017dc16ef5241.mockapi.io";
 
@@ -206,12 +205,15 @@ export default function AdminUsers() {
                             {errors.location && <span className="error-message">Campo requerido</span>}
 
                             <label htmlFor="bornDate">Fecha de Nacimiento:</label>
-                            <DateInput
-                                value={selectedContact?.bornDate}
-                                onChange={(date) => setSelectedContact({ ...selectedContact, bornDate: date })}
+                            <input
+                                id="bornDate"
+                                type="date"
+                                value={selectedContact?.bornDate || ''} // Establecer un valor predeterminado si selectedContact es undefined
+                                onChange={(e) => setSelectedContact({ ...selectedContact, bornDate: e.target.value })}
                                 {...register('bornDate', { required: true })}
                             />
                             {errors.bornDate && <span className="error-message">Campo requerido</span>}
+
 
                             <label htmlFor="image">URL de la Imagen:</label>
                             <input
