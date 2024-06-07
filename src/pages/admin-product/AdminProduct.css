@@ -1,0 +1,136 @@
+.admin-form-container{
+    display: flex;
+    margin-bottom: 35px;
+    justify-content: center;
+  
+    .admin-form{
+      display: flex;
+      flex-direction: column;
+      gap: .5rem;
+      width: 100%;
+      max-width: 400px;
+  
+  
+      .input-group {
+        display: flex;
+        flex-direction: column;
+        gap: .125rem;
+  
+        label {
+          font-size: .75rem;
+          color: var(--terciary-color);
+        }
+  
+        input,
+        select,
+        textarea {
+          padding: .5rem;
+          font-family: 'Roboto', sans-serif;
+        }
+      }
+  button[type="submit"] {
+        padding: .5rem;
+        background-color: var(--terciary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+  
+        &.btn-success{
+          background-color: green;
+        }
+      }
+      .input-error{
+        color: red;
+        font-size: 10px;
+      }
+    }
+  }
+  
+  .admin-table-container{
+    width: 100%;
+    overflow: auto;
+    margin-bottom: 40px;
+  
+    .admin-table{
+      width: 100%;
+      border-collapse: collapse;
+      background-color: white;
+  
+      th, td{
+        border: 1px solid var(--terciary-color);
+        padding: .5rem;
+      }
+      thead tr {
+        background-color: var(--terciary-color);
+        color: white;
+      }
+      tbody {
+  
+        tr:nth-child(even) {
+          background-color: rgb(236, 216, 219);
+        }
+  
+        .image {
+          img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 50%;
+          }
+        }
+  
+        .actions{
+          .action-btn{
+            padding: .25rem;
+            font-size: 1rem;
+            background-color: green;
+            color: white;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            outline: none;
+  
+            &.btn-danger{
+              background-color: red;
+            }
+  
+            &:not(:last-child){
+              margin-right: .5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+
+  @media (max-width: 600px) {
+    h1{
+        margin-left: 30px;
+        margin-bottom: 15px;
+    }
+
+    .admin-form-container{
+        max-width: 400px;
+        margin-left: 30px;
+    }
+}
+
+/* ====== Table ======= */
+
+@media (max-width: 925px) {
+    .admin-table-container{
+        max-width:800px;
+        margin: 15px 20px;
+    }
+}
+@media (max-width: 820px) {
+    .admin-table-container{
+        max-width: 600px;
+    }
+}
+@media (max-width: 620px) {
+    .admin-table-container{
+        max-width: 450px;
+    }
+}

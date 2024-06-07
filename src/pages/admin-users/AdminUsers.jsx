@@ -3,10 +3,10 @@ import { useForm } from 'react-hook-form';
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import './AdminUsers.css';
-import { formatTimestampToInputDate } from '../../services/utils/FormatDate';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPencil} from '@fortawesome/free-solid-svg-icons';
-import {faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import { faPencil } from '@fortawesome/free-solid-svg-icons';
+import { faTrashCan } from '@fortawesome/free-regular-svg-icons';
+import DateInput from '../../services/utils/Dateinput'
 
 const URL = "https://665e339a1e9017dc16ef5241.mockapi.io";
 
@@ -31,19 +31,18 @@ export default function AdminUsers() {
     async function handleAddContact() {
         setIsModalOpen(true);
         setSelectedContact(null);
+        reset(); // Resetea el formulario al agregar un nuevo contacto
     }
 
     async function handleEditContact(contact) {
-        setSelectedContact({
-            ...contact,
-            bornDate: formatTimestampToInputDate(contact.bornDate)
-        });
+        setSelectedContact(contact);
         setIsModalOpen(true);
+        reset(contact);
     }
 
     async function handleCloseModal() {
         setIsModalOpen(false);
-        reset();
+        reset(); // Resetea el formulario al cerrar el modal
     }
 
     async function handleSaveContact(data) {
@@ -51,7 +50,7 @@ export default function AdminUsers() {
             try {
                 const response = await axios.put(`${URL}/users/${selectedContact.id}`, data);
                 const updatedContacts = contacts.map(contact =>
-                    contact.id === selectedContact.id ? { ...response.data } : contact
+                    contact.id === selectedContact.id ? response.data : contact
                 );
                 setContacts(updatedContacts);
                 Swal.fire({
@@ -131,7 +130,7 @@ export default function AdminUsers() {
                                 <td>{contact.fullname}</td>
                                 <td>{contact.email}</td>
                                 <td>{contact.location}</td>
-                                <td>{formatTimestampToInputDate(contact.bornDate)}</td>
+                                <td>{new Date(contact.bornDate).toLocaleDateString()}</td>
                                 <td className='actions'>
                                     <button onClick={() => handleEditContact(contact)} className="action-btn">
                                         <FontAwesomeIcon icon={faPencil} />
@@ -153,19 +152,45 @@ export default function AdminUsers() {
                         <h2>{selectedContact ? 'Editar Contacto' : 'Agregar Contacto'}</h2>
                         <form onSubmit={handleSubmit(handleSaveContact)} className="contact-form">
                             <label htmlFor="fullname">Nombre Completo</label>
-                            <input type="text" id="fullname" defaultValue={selectedContact?.fullname || ''} {...register('fullname', { required: 'El campo es requerido', minLength: { value: 3, message: 'La cantidad de caracteres es invalida' }, maxLength: { value: 35, message: 'El nombre es demasiado largo' } })} placeholder="Ingresa tu nombre completo" />
+                            <input
+                                type="text"
+                                id="fullname"
+                                defaultValue={selectedContact?.fullname || ''}
+                                {...register('fullname', {
+                                    required: 'El campo es requerido',
+                                    minLength: { value: 3, message: 'La cantidad de caracteres es invalida' },
+                                    maxLength: { value: 35, message: 'El nombre es demasiado largo' }
+                                })}
+                                placeholder="Ingresa tu nombre completo"
+                            />
                             {errors.fullname && <span className="error-message">{errors.fullname.message}</span>}
 
                             <label htmlFor="email">Email:</label>
-                            <input type="email" id="email" defaultValue={selectedContact?.email || ''} {...register('email', { required: true })} placeholder="Ingresa tu email" />
+                            <input
+                                type="email"
+                                id="email"
+                                defaultValue={selectedContact?.email || ''}
+                                {...register('email', { required: true })}
+                                placeholder="Ingresa tu email"
+                            />
                             {errors.email && <span className="error-message">Campo requerido</span>}
 
                             <label htmlFor="password">Contraseña:</label>
-                            <input type="password" id="password" defaultValue={selectedContact?.password || ''} {...register('password', { required: true })} placeholder="Ingresa tu contraseña" />
+                            <input
+                                type="password"
+                                id="password"
+                                defaultValue={selectedContact?.password || ''}
+                                {...register('password', { required: true })}
+                                placeholder="Ingresa tu contraseña"
+                            />
                             {errors.password && <span className="error-message">Campo requerido</span>}
 
                             <label htmlFor="location">Localización:</label>
-                            <select id="location" defaultValue={selectedContact?.location || ''} {...register('location', { required: true })}>
+                            <select
+                                id="location"
+                                defaultValue={selectedContact?.location || ''}
+                                {...register('location', { required: true })}
+                            >
                                 <option value="">Seleccione un país</option>
                                 <option value="Argentina">Argentina</option>
                                 <option value="Bolivia">Bolivia</option>
@@ -181,11 +206,21 @@ export default function AdminUsers() {
                             {errors.location && <span className="error-message">Campo requerido</span>}
 
                             <label htmlFor="bornDate">Fecha de Nacimiento:</label>
-                            <input type="date" id="bornDate" defaultValue={selectedContact?.bornDate || ''} {...register('bornDate', { required: true })} />
+                            <DateInput
+                                value={selectedContact?.bornDate}
+                                onChange={(date) => setSelectedContact({ ...selectedContact, bornDate: date })}
+                                {...register('bornDate', { required: true })}
+                            />
                             {errors.bornDate && <span className="error-message">Campo requerido</span>}
 
                             <label htmlFor="image">URL de la Imagen:</label>
-                            <input type="url" id="image" defaultValue={selectedContact?.image || ''} {...register('image', { required: true })} placeholder="Ingresa la URL de tu imagen" />
+                            <input
+                                type="url"
+                                id="image"
+                                defaultValue={selectedContact?.image || ''}
+                                {...register('image', { required: true })}
+                                placeholder="Ingresa la URL de tu imagen"
+                            />
                             {errors.image && <span className="error-message">Campo requerido</span>}
 
                             <button type="submit" className={`btn ${selectedContact ? 'btn-update' : ''}`}>

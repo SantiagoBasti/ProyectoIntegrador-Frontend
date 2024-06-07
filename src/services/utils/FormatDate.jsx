@@ -1,9 +1,12 @@
-export function formatTimestampToInputDate(timestamp) {
+export function formatTimestampToInputDate(timetamp){
 
-    const date = new Date(timestamp);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
+    const collator = new Intl.DateTimeFormat("en-CA", {
+        year:"numeric",
+        month:"2-digit",
+        day:"2-digit"
+    })
 
-    return `${day}-${month}-${year}`;
+    return collator.format(timetamp)
+    //2024-02-01
+
 }

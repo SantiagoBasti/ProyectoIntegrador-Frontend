@@ -1,0 +1,10 @@
+h2{
+    margin-bottom: 30px;
+}
+.product-card-container {
+    display: flex;
+    gap: 33px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+}
