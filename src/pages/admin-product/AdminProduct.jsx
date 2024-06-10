@@ -1,11 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./AdminProduct.css";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { formatTimestampToInputDate } from "../../services/utils/FormatDate";
 import Swal from "sweetalert2";
-import "./AdminProduct.css";
+import { FormatPrice } from "../../services/utils/FormatPrice";
 
 const URL = "https://665e339a1e9017dc16ef5241.mockapi.io";
 
@@ -169,7 +170,7 @@ export default function AdminProduct() {
           </button>
         </form>
       </div>
-
+      
       <div className="admin-table-container">
         <table className="admin-table">
           <thead>
@@ -195,10 +196,11 @@ export default function AdminProduct() {
                   <p>{product.category}</p>
                 </td>
                 <td className="description">
-                  <p>{product.description}</p>
+                  <p className='text-description' title={product.description}>{product.description}
+                  </p>
                 </td>
                 <td className="price">
-                  <p>${product.price}</p>
+                <FormatPrice price={product.price} />
                 </td>
                 <td className="actions">
                   <button className="action-btn" onClick={() => handleEditProduct(product)}>

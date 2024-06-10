@@ -4,6 +4,7 @@ import { faStar } from "@fortawesome/free-regular-svg-icons";
 import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
+import { FormatPrice } from "../../services/utils/FormatPrice";
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
@@ -24,7 +25,7 @@ export default function ProductCard({ product }) {
             <h2>{product.name}</h2>
           </div>
           <div className="price-card">
-            $ {product.price} <small>COP</small>
+          <FormatPrice price={product.price} /> <small>COP</small>
           </div>
           <div className="product-review">
             <FontAwesomeIcon icon={faStarSolid} />
