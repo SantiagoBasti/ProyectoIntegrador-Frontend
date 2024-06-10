@@ -1,5 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
-import './App.css'
+import './App.css';
 import Footer from './layout/footer/Footer';
 import Header from './layout/header/Header';
 import Home from './pages/home/Home';
@@ -12,17 +12,16 @@ import AdminGuard from './services/guard/AdminGuard';
 function App() {
   return (
     <>
-     <Header/>
+      <Header />
 
-     <main className="main-container">
-      <Routes>
+      <main className="main-container">
+        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route
             path="/admin-product"
             element={
               <AdminGuard>
-                {/* Componente hijo: children */}
                 <AdminProduct />
               </AdminGuard>
             }
@@ -36,13 +35,12 @@ function App() {
             }
           />
           <Route path="/product-detail/:id" element={<ProductDetail />} />
-      </Routes>
-     </main>
+        </Routes>
+      </main>
 
-     <Footer/>
-
+      <Footer />
     </>
   );
 }
 
-export default App
+export default App;

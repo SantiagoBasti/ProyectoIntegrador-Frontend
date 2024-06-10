@@ -27,14 +27,14 @@
 }
 
 .category-card {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: bold;
   margin: 10px 0;
 }
 
 .category-card small {
   display: block;
-  font-size: 10px;
+  font-size: 13px;
   margin-bottom: 0.75rem;
 }
 
@@ -62,7 +62,7 @@
 }
 
 .price-card {
-  font-size: 20px;
+  font-size: 22px;
   color: #d9534f;
   font-weight: bold;
   margin-bottom: 10px;

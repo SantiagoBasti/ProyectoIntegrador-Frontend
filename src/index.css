@@ -18,6 +18,7 @@
 #root {
   display: flex;
   flex-direction: column;
+  font-family: "Bebas Neue", sans-serif;
   min-height: 100dvh;
 }
 
