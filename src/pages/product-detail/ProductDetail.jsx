@@ -13,7 +13,7 @@ const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalDescription, setModalDescription] = useState(false);
-  const { addOrderItem } = useOrder(); // Usar el contexto
+  const { addOrderItem } = useOrder(); 
 
   useEffect(() => {
     axios.get(`${URL}/products/${id}`)
@@ -30,7 +30,7 @@ const ProductDetail = () => {
   };
 
   const handleBuyClick = (product) => {
-    addOrderItem(product); // Agregar el producto al carrito
+    addOrderItem(product);
   };
 
   if (!product) {

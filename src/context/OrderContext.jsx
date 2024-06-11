@@ -12,27 +12,29 @@ export const OrderProvider = ({ children }) => {
   );
 
   const [sidebarToggle, setSidebarToggle] = useState(false);
-  const [count, setCount] = useState(0); 
+  const [count, setCount] = useState(0);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     let totalCount = 0;
     order.forEach((prod) => {
       totalCount += prod.quantity;
     });
-    setCount(totalCount); 
+    setCount(totalCount);
     localStorage.setItem("order", JSON.stringify(order));
     calculateTotal();
   }, [order]);
-
-  const [total, setTotal] = useState(0);
 
   function addOrderItem(producto) {
     const product = order.find((prod) => prod.id === producto.id);
     if (product) {
       handleChangeQuantity(product.id, product.quantity + 1);
     } else {
-      producto.quantity = 1;
-      setOrder([...order, producto]);
+      const isProductInCart = order.some((prod) => prod.id === producto.id);
+      if (!isProductInCart) {
+        producto.quantity = 1;
+        setOrder([...order, producto]);
+      }
     }
   }
 
@@ -45,7 +47,9 @@ export const OrderProvider = ({ children }) => {
   }
 
   function handleChangeQuantity(id, quantity) {
-    const updateOrder = order.map(item => {
+    quantity = Math.max(0, quantity);
+
+    const updateOrder = order.map((item) => {
       if (item.id === id) {
         item.quantity = quantity;
       }
@@ -64,9 +68,9 @@ export const OrderProvider = ({ children }) => {
       reverseButtons: true,
       confirmButtonText: "Borrar",
       confirmButtonColor: "red",
-    }).then(result => {
+    }).then((result) => {
       if (result.isConfirmed) {
-        const updOrder = order.filter(prod => prod.id !== id);
+        const updOrder = order.filter((prod) => prod.id !== id);
         setOrder(updOrder);
       }
     });
@@ -75,9 +79,19 @@ export const OrderProvider = ({ children }) => {
   function toggleSidebarOrder() {
     setSidebarToggle(!sidebarToggle);
   }
-
   return (
-    <OrderContext.Provider value={{ order, total, sidebarToggle, count, addOrderItem, handleChangeQuantity, removeItem, toggleSidebarOrder }}>
+    <OrderContext.Provider
+      value={{
+        order,
+        total,
+        sidebarToggle,
+        count,
+        addOrderItem,
+        handleChangeQuantity,
+        removeItem,
+        toggleSidebarOrder,
+      }}
+    >
       {children}
     </OrderContext.Provider>
   );
