@@ -137,33 +137,57 @@ export default function AdminProduct() {
               <span className="input-error">El campo es requerido</span>
             )}
             {(errors.name?.type === "minLength" || errors.name?.type === "maxLength") && (
-              <span className="input-error">La cantidad de caracteres es invalida</span>
+              <span className="input-error">La cantidad de caracteres es inválida</span>
             )}
           </div>
           <div className="input-group">
             <label>Precio</label>
-            <input type="number" {...register("price")} />
+            <input
+              type="number"
+              {...register("price", { required: true })}
+            />
+            {errors.price && (
+              <span className="input-error">El campo es requerido</span>
+            )}
           </div>
           <div className="input-group">
             <label>Imagen</label>
-            <input type="url" {...register("image")} />
+            <input
+              type="url"
+              {...register("image", { required: true })}
+            />
+            {errors.image && (
+              <span className="input-error">El campo es requerido</span>
+            )}
           </div>
           <div className="input-group">
             <label>Categoria</label>
-            <select {...register("category")}>
+            <select {...register("category", { required: true })}>
               <option value="">Tipo de motocicleta</option>
               <option value="HyperNaked">HyperNaked</option>
               <option value="SuperDeportiva">SuperDeportiva</option>
               <option value="Adventure">Adventure</option>
             </select>
+            {errors.category && (
+              <span className="input-error">El campo es requerido</span>
+            )}
           </div>
           <div className="input-group">
             <label>Descripcion</label>
-            <textarea {...register("description")} />
+            <textarea {...register("description", { required: true })} />
+            {errors.description && (
+              <span className="input-error">El campo es requerido</span>
+            )}
           </div>
           <div className="input-group">
             <label>Fecha ingreso</label>
-            <input type="date" {...register("createdAt")} />
+            <input
+              type="date"
+              {...register("createdAt", { required: true })}
+            />
+            {errors.createdAt && (
+              <span className="input-error">El campo es requerido</span>
+            )}
           </div>
           <button className={isEditing ? 'btn-success' : ''} type="submit">
             {isEditing ? 'Actualizar' : 'Crear'}

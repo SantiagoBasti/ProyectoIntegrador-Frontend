@@ -3,12 +3,17 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import './ProductDetail.css';
 import { FormatPrice } from '../../services/utils/FormatPrice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons';
+import { useOrder } from '../../context/OrderContext'; // Importar el contexto
 
-const URL = "https://665e339a1e9017dc16ef5241.mockapi.io"
+const URL = "https://665e339a1e9017dc16ef5241.mockapi.io";
+
 const ProductDetail = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalDescription, setModalDescription] = useState(false);
+  const { addOrderItem } = useOrder(); // Usar el contexto
 
   useEffect(() => {
     axios.get(`${URL}/products/${id}`)
@@ -22,6 +27,10 @@ const ProductDetail = () => {
 
   const handleQuoteClick = () => {
     setModalDescription(!modalDescription);
+  };
+
+  const handleBuyClick = (product) => {
+    addOrderItem(product); // Agregar el producto al carrito
   };
 
   if (!product) {
@@ -40,12 +49,14 @@ const ProductDetail = () => {
           <div className="moto-info">
             <h2>{product.name}</h2>
             <h3>2024</h3>
-            {/* Utilizar el componente FormatPrice para mostrar el precio */}
             <p className='price-motocycle'>
               <FormatPrice price={product.price} /> COP
-              </p>
+            </p>
             <button className="cta-button" onClick={handleQuoteClick}>
               Descripción →
+            </button>
+            <button className="cta-button btn-cart" onClick={() => handleBuyClick(product)}>
+              <FontAwesomeIcon icon={faCartShopping} />
             </button>
           </div>
         </div>
@@ -69,6 +80,6 @@ const ProductDetail = () => {
       )}
     </>
   );
-}
+};
 
 export default ProductDetail;

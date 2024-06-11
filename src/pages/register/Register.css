@@ -1,4 +1,3 @@
-
 .register-form {
     max-width: 650px;
     margin: 40px auto; 
@@ -34,6 +33,8 @@
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.05);
     font-size: 1.1rem;
     transition: border-color 0.3s;
+    font-family: sans-serif;
+    font-weight: 500;
 }
 
 .register-form input:focus,
@@ -64,10 +65,10 @@
     padding: 0.3rem;
     margin-top: 0.25rem;
     font-size: 0.75rem;
-    animation: fadeInUp 0.5s ease-out;
+    animation: error 0.5s ease-out;
 }
 
-@keyframes fadeInUp {
+@keyframes error {
     from {
         opacity: 0;
         transform: translateY(10px);

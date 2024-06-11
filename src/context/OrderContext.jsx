@@ -8,19 +8,19 @@ export const useOrder = () => useContext(OrderContext);
 
 export const OrderProvider = ({ children }) => {
   const [order, setOrder] = useState(
-    JSON.parse(localStorage.getItem("order"))  || []
+    JSON.parse(localStorage.getItem("order")) || []
   );
 
-  const [sidebarToggle, setsidebarToggle] = useState(false)
+  const [sidebarToggle, setSidebarToggle] = useState(false);
   const [count, setCount] = useState(0); 
 
-  useEffect(() =>{
+  useEffect(() => {
     let totalCount = 0;
     order.forEach((prod) => {
       totalCount += prod.quantity;
     });
     setCount(totalCount); 
-    localStorage.setItem("order", JSON.stringify(order))
+    localStorage.setItem("order", JSON.stringify(order));
     calculateTotal();
   }, [order]);
 
@@ -44,36 +44,36 @@ export const OrderProvider = ({ children }) => {
     setTotal(totalCount);
   }
 
-  function handleChangeQuantity(id, quantity){
+  function handleChangeQuantity(id, quantity) {
     const updateOrder = order.map(item => {
-      if(item.id === id){
+      if (item.id === id) {
         item.quantity = quantity;
       }
-      return item
+      return item;
     });
-    setOrder(updateOrder)
+    setOrder(updateOrder);
   }
 
-  function removeItem(id){
+  function removeItem(id) {
     Swal.fire({
-      title:"Borar Archivo",
-      text:"Realmente desea quitar este producto",
-      icon:"error",
+      title: "Borrar Archivo",
+      text: "Realmente desea quitar este producto",
+      icon: "error",
       showConfirmButton: true,
       showCancelButton: true,
       reverseButtons: true,
-      confirmButtonText:"Borrar",
+      confirmButtonText: "Borrar",
       confirmButtonColor: "red",
     }).then(result => {
-      if(result.isConfirmed){
+      if (result.isConfirmed) {
         const updOrder = order.filter(prod => prod.id !== id);
-        setOrder(updOrder)
+        setOrder(updOrder);
       }
-    })
+    });
   }
 
-  function toggleSidebarOrder(){
-    setsidebarToggle(!sidebarToggle)
+  function toggleSidebarOrder() {
+    setSidebarToggle(!sidebarToggle);
   }
 
   return (
