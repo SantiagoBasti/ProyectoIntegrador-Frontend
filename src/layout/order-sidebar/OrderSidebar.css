@@ -1,0 +1,127 @@
+.order-sidebar {
+  width: 0;
+  overflow: hidden;
+  background-color: white;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  transition: width .3s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-left: 1px solid #eaeaea;
+}
+
+.order-sidebar.active {
+  width: 400px;
+}
+
+.order-header {
+        display: flex;
+        flex-direction: column;
+        border-bottom: 1px solid #d0cdcd;
+        gap: 1rem;
+        padding: 1rem;
+        padding-top: 6.5rem;
+
+        h2 {
+            color: rgba(218, 54, 73, 0.786);
+            font-size: 1.25rem;
+            text-transform: uppercase;
+        }
+}
+
+.order-list {
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+.order-item {
+  margin-bottom: 1rem;
+}
+
+.order-item-details {
+  display: flex;
+  align-items: center;
+}
+
+.order-image {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 1rem;
+}
+
+.order-info {
+  flex-grow: 1;
+}
+
+.order-item-name {
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.order-quantity {
+  display: flex;
+  align-items: center;
+}
+
+.order-quantity-input {
+  width: 40px;
+  padding: 0.25rem;
+  background-color: #f4f3f3;
+  border-radius: 3px;
+  text-align: center;
+  border: none;
+  outline: none;
+  color: #222;
+  margin-right: 1rem;
+}
+
+.trash-icon {
+  color: red;
+  cursor: pointer;
+  margin-left: 7px;
+}
+
+.order-footer {
+  padding: 1rem;
+  border-top: 1px solid #eaeaea;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.total-count {
+  color: #555;
+  font-size: 0.875rem;
+}
+
+.total-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.checkout-button {
+  padding: 0.5rem 1rem;
+  background-color: var(--terciary-color);
+  color:rgb(255, 255, 255);
+  border: none;
+  transition: scale .2s ease-in-out;
+
+    &:hover{
+  scale: 1.06;
+  color: rgb(231, 201, 204);
+    }
+    &:active{
+  scale: .80;
+    }
+}
+
+
+

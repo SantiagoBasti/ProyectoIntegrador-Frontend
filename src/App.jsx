@@ -8,12 +8,14 @@ import AdminProduct from './pages/admin-product/AdminProduct';
 import AdminUsers from './pages/admin-users/AdminUsers';
 import ProductDetail from './pages/product-detail/ProductDetail';
 import AdminGuard from './services/guard/AdminGuard';
+import OrderSidebar from './layout/order-sidebar/OrderSidebar';
 
 function App() {
   return (
     <>
       <Header />
 
+      <OrderSidebar/>
       <main className="main-container">
         <Routes>
           <Route path="/" element={<Home />} />

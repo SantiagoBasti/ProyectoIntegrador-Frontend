@@ -5,9 +5,12 @@ import { faStar as faStarSolid } from "@fortawesome/free-solid-svg-icons";
 import { faArrowUpRightFromSquare } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from 'react-router-dom';
 import { FormatPrice } from "../../services/utils/FormatPrice";
+import { useOrder } from "../../context/OrderContext";
 
 export default function ProductCard({ product }) {
   const navigate = useNavigate();
+
+  const { addOrderItem } = useOrder();
 
   const handleDetailClick = () => {
     navigate(`/product-detail/${product.id}`);
@@ -36,7 +39,7 @@ export default function ProductCard({ product }) {
           </div>
         </div>
         <div className="card-footer">
-          <button>Añadir</button> 
+          <button onClick={() => addOrderItem(product)}>Añadir</button> 
           <button className="btn-icon" onClick={handleDetailClick}>
             <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
           </button>

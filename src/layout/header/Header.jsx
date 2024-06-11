@@ -2,11 +2,14 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping, faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { useOrder } from "../../context/OrderContext";
 import "./Header.css";
 
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
     const isAdmin = true;
+
+    const {toggleSidebarOrder, count} = useOrder()
 
     const toggleMenu = () => {
         setMenuOpen(!menuOpen);
@@ -38,7 +41,9 @@ export default function Header() {
                     {menuOpen ? <FontAwesomeIcon icon={faTimes} /> : <FontAwesomeIcon icon={faBars} />}
                 </div>
                 <div className="user-info">
-                    <FontAwesomeIcon icon={faCartShopping} />
+                    <div className={`user-cart-container ${ count < 1 ? "" : "show-circle"}`} data-count={count}>
+                        <FontAwesomeIcon className="user-cart" icon={faCartShopping} onClick={() => toggleSidebarOrder()} />
+                    </div>
                 </div>
             </div>
         </header>
