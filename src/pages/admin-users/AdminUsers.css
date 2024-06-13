@@ -5,15 +5,15 @@
     width: 100%;
     
     h1 {
-      border-bottom: 2px solid #c4c7fd;
+      border-bottom: 2px solid var(--terciary-color);
       margin-bottom: 1.5rem;
+      text-align: center;
     }
   
     >div {
       flex: 1;
       padding: 1rem;
     }
-  
     .contact-form {
   
       .input-group {
@@ -23,103 +23,92 @@
         margin: 0 auto 1rem;
       
         label {
-          color: #b2b6fe;
-          font-size: .75rem;
+          color: var(--secundary-color);
+          font-size: 1rem;
           text-align: left;
         }
   
         button {
-          background-color: #535bf2;
+          background-color: var(--terciary-color);
           transition: background-color .3s;
+          color: var(--primary-color);
           cursor: pointer;
   
           &:hover {
-            background-color: #3f47cc;
+            background-color: rgb(129, 29, 40);
           }
         }
       
         input, button {
           outline: none;
-          border: 2px solid #535bf2;
+          border: 2px solid rgb(218, 152, 160);
           border-radius: 4px;
           padding: .5rem;
+          font-family: sans-serif;
         }
       }
-  
+
+      .error-message {
+        color: var(--terciary-color);
+        border-radius: 5px;
+        padding: 0.1rem;
+        margin-bottom: .7rem;
+        font-size: 0.75rem;
+        animation: userError 0.5s ease-out;
+      }
+      
+      @keyframes userError {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
     }
+
+
+
+
   
-    .contact-list {
-      ul {
-        list-style: none;
-        padding-left: 1rem;
-      }
-      .contact {
-        display: flex;
-        font-size: .875rem;
-        gap: .5rem;
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    background-color: black;
+    margin-bottom: 35px;
+  }
   
-        &:not(:last-child) {
-          border-bottom: 1px solid #c4c7fd99;
-        }
+  .contact-table {
+      max-width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 25px;
+      color: var(--primary-color);
+      overflow-x: auto;
+  }
   
-        .contact-image-wrapper {
-          padding: .5rem;
+  .contact-table th, .contact-table td {
+      border: 1px solid var(--primary-color);
+      padding: 10px;
+      text-align: left;
+      font-size: 14px;
+      text-align: center;      
+  }
   
-          .contact-image {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-          }
-        }
+  .contact-table th {
+      background-color: var(--terciary-color);
+      color: var(--primary-color);
+  }
   
-        .contact-user {
-          display: flex;
-          flex-direction: column;
-          padding: .5rem;
-  
-          .contact-fullname {
-            font-size: 1.25rem;
-            font-weight: 500; 
-          }
-  
-          .contact-date {
-            font-size: .75rem;
-            color: #b2b6fe;
-          }
-        }
-        .contact-email, .contact-phone {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-  
-        .contact-actions {
-          display: flex;
-          align-items: center;
-          gap: .5rem;
-          margin-left: auto;
-  
-          button {
-            padding: .375rem .25rem;
-            background-color: #121212;
-            color: #3f47cc;
-            border: none;
-            border-radius: 4px;
-            outline: none;
-            cursor: pointer;
-            
-            &.danger {
-              color: #ff4d4d;   
-            }
-  
-            &:hover{
-              background-color: #444;
-              background: linear-gradient(to bottom, #121212 70%, #3f47cc );
-            }
-          }
-        }
-      }
-    }
+  .contact-table td img.contact-image {
+      max-width: 50px;
+      border-radius: 5px;
+  }
+
+  .contact td{
+    font-family: sans-serif;
   }
   
   @media screen and (width > 768px) {
@@ -127,3 +116,4 @@
       flex-direction: row;
     }
   }
+}
