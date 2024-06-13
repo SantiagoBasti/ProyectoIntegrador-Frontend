@@ -79,6 +79,7 @@ export const OrderProvider = ({ children }) => {
   function toggleSidebarOrder() {
     setSidebarToggle(!sidebarToggle);
   }
+
   return (
     <OrderContext.Provider
       value={{

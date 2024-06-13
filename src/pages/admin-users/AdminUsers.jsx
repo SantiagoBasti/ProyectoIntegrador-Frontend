@@ -69,8 +69,14 @@ export default function AdminUsers() {
       await axios.put(`${URL}users/${contacto.id}`, contacto);
       getContactList();
       setFormContact(defaultFormValues);
+      Swal.fire({
+        icon: "success",
+        title: "Éxito",
+        text: "El usuario se editó correctamente",
+        confirmButtonColor: "rgb(218, 54, 74)"
+      });
     } catch (error) {
-      Swal.fire("Error", "No se pudo actualizar el contacto", "icon");
+      Swal.fire("Error", "No se pudo actualizar el contacto", "error");
     }
   }
 
@@ -79,25 +85,38 @@ export default function AdminUsers() {
       const response = await axios.post(`${URL}users`, contacto);
       setUsers([...users, response.data]);
       setFormContact(defaultFormValues);
+      Swal.fire({
+        icon: "success",
+        title: "Éxito",
+        text: "El usuario se agregó correctamente",
+        confirmButtonColor: "rgb(218, 54, 74)"
+      });
     } catch (error) {
-      Swal.fire("Error", "No se pudo crear el contacto", "icon");
+      Swal.fire("Error", "No se pudo crear el contacto", "error");
     }
   }
 
-  function handleDelete(id) {
+function handleDelete(id) {
     Swal.fire({
       title: "Eliminar Usuario",
       text: "Realmente desea eliminar el usuario",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "rgb(218, 54, 74)",
       confirmButtonText: "Borrar",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`${URL}users/${id}`);
           getContactList();
+          Swal.fire({
+            title: "Éxito",
+            text: "El usuario se eliminó correctamente",
+            icon: "success",
+            confirmButtonColor: "rgb(218, 54, 74)" 
+          });
         } catch (error) {
-          Swal.fire("Error", "No se pudo eliminar el contacto", "icon");
+          Swal.fire("Error", "No se pudo eliminar el contacto", "error");
         }
       }
     });
@@ -116,7 +135,7 @@ export default function AdminUsers() {
   return (
     <>
       <div className="contact-list-container">
-        {/* ===========================Formulario añadir contactos====================== */}
+
         <div className="contact-form-wrapper">
           <h1>{formContact.id ? "Editar contacto" : "Añadir contacto"}</h1>
           <form className="contact-form" onSubmit={handleSubmit(handleFormSubmit)}>

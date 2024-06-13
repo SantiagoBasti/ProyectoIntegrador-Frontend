@@ -152,10 +152,15 @@
 
 .close {
   position: absolute;
+  font-size: 3rem;
   top: 10px;
   right: 10px;
   cursor: pointer;
   color: var(--terciary-color);
+
+  &:hover{
+    color: #2f2f2f;
+  }
 }
 
 .modal-image {
