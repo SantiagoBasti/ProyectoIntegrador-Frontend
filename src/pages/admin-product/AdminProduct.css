@@ -102,7 +102,7 @@
       }
     }
   }
-  
+
 
   @media (max-width: 600px) {
     h1{
@@ -139,6 +139,16 @@
 
 @media (max-width: 620px) {
     .admin-table-container{
-        max-width: 450px;
+        max-width: 470px;
+    }
+}
+@media (max-width: 500px) {
+    .admin-table-container{
+        max-width: 370px;
+    }
+}
+@media (max-width: 400px) {
+    .admin-table-container{
+        max-width: 320px;
     }
 }
