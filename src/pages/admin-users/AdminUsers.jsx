@@ -202,9 +202,9 @@ export default function AdminUsers() {
             </div>
 
             <div className="input-group">
-              <button type="submit">
-                {formContact.id ? "Editar contacto" : "Añadir contacto"}
-              </button>
+            <button type="submit" className={formContact.id ? "edit-btn" : "add-button"}>
+            {formContact.id ? "Editar contacto" : "Añadir contacto"}
+            </button>
             </div>
           </form>
         </div>
@@ -235,7 +235,7 @@ export default function AdminUsers() {
                     <td className="contact-location">{usuario.location}</td>
                     <td className="contact-date">{formatDateUser(usuario.bornDate)}</td>
                     <td className="contact-actions">
-                      <button onClick={() => handleEdit(usuario)}>
+                      <button className='edit' onClick={() => handleEdit(usuario)}>
                         <Icon icon={pencil} />
                       </button>
                       <button className="danger" onClick={() => handleDelete(usuario.id)}>
