@@ -1,0 +1,99 @@
+.login-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw; 
+    height: 100vh; 
+    background: linear-gradient(135deg, rgb(218,54,74), rgb(0,0,0));
+    position: absolute; 
+    top: 0;
+    left: 0;
+    overflow: hidden; 
+}
+
+.login-container {
+    width: 100%;
+    max-width: 400px; 
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.1); 
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    color: white;
+    text-align: center;
+    box-sizing: border-box; 
+    position: relative;
+}
+
+.login-container h2 {
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 2rem;
+}
+
+.input-group .icon {
+    position: absolute;
+    left: 10px;
+    color: white;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border: none;
+    border-radius: 25px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; 
+    font-family: sans-serif;
+}
+
+.input-group input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.input-group input:focus {
+    background-color: rgba(255, 255, 255, 0.3);
+    outline: none;
+}
+
+.login-button {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 25px;
+    background-color: var(--secundary-color);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box; 
+}
+
+.login-button:hover {
+    background-color: rgb(218,54,74);
+    transform: translateY(-3px);
+}
+
+.message-error {
+    position: absolute;
+    color: rgb(245, 24, 24);
+    font-size: 0.8rem;
+    margin-top: 0.1rem; 
+    left: 0; 
+    width: 100%; 
+    top: 100%; 
+    padding: 0 1rem; 
+    box-sizing: border-box; 
+}
