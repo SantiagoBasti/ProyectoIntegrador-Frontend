@@ -211,12 +211,8 @@ function handleDelete(id) {
             </div>
 
             <div className="input-group">
-              <label htmlFor="image">Enlace a la Imagen</label>
-              <input
-                type="url"
-                placeholder="Ingrese el enlace a la imagen"
-                {...register('image', { required: 'El enlace a la imagen es requerido' })}
-              />
+            <label htmlFor="image">Imagen</label>
+            <input type="file" accept="image/*" {...register("image")} />
               {errors.image && <span className='error-message'>{errors.image.message}</span>}
             </div>
 

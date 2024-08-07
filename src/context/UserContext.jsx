@@ -28,6 +28,25 @@ export const UserProvider = ({ children }) => {
     else localStorage.removeItem("token");
   }, [user, token]);
 
+
+  // Token expirado el usuario se desloguea
+  useEffect(() => {
+    const checkTokenValidity = async () => {
+        if (token) {
+            try {
+                await axios.get(`${URL}/verify-token`, {
+                    headers: { Authorization: token }
+                });
+            } catch (error) {
+                logout();
+            }
+        }
+    };
+
+    const interval = setInterval(checkTokenValidity, 3600000); 
+    return () => clearInterval(interval);
+}, [token]);
+
   async function login(data) {
     try {
       const response = await axios.post(`${URL}/login`, data);
@@ -67,4 +86,4 @@ export const UserProvider = ({ children }) => {
       {children}
     </userContext.Provider>
   );
-};
+}
