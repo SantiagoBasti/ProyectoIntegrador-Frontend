@@ -1,29 +1,61 @@
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
 import Swal from 'sweetalert2';
+import useApi from '../../services/interceptor/interceptor'; 
+import { useUser } from '../../context/UserContext';
 import './Register.css';
-
-const URL = "https://665e339a1e9017dc16ef5241.mockapi.io/users";
 
 export default function Register() {
     const { register, handleSubmit, formState: { errors }, reset } = useForm();
-    
+    const api = useApi();
+    const { login } = useUser(); 
+
     async function onSubmit(data) {
         try {
-            const response = await axios.post(URL, data);
+            const formData = new FormData();
+            formData.append('fullname', data.fullname);
+            formData.append('email', data.email);
+            formData.append('password', data.password);
+            formData.append('location', data.location);
+            formData.append('bornDate', data.bornDate);
+    
+            
+            if (data.image && data.image[0]) {
+                formData.append('user', data.image[0]); 
+            }
+            
+    
+            const response = await api.post('/users', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+    
             console.log('User created:', response.data);
+    
+            const { email, password } = data; 
+    
+            await login({ email, password });
+    
             Swal.fire({
                 icon: 'success',
                 title: '¡Registro exitoso!',
-                text: 'El usuario se ha registrado correctamente.',
+                text: 'El usuario se ha registrado y ha iniciado sesión correctamente.',
                 confirmButtonColor: 'rgb(218,54,74)',
             }).then(() => {
                 reset();
+                window.location.href = '/';
             });
         } catch (error) {
             console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Hubo un problema al registrar el usuario.',
+                confirmButtonColor: 'rgb(218,54,74)',
+            });
         }
     }
+    
 
     return (
         <form onSubmit={handleSubmit(onSubmit)} className="register-form">
@@ -94,25 +126,12 @@ export default function Register() {
             </div>
 
             <div>
-                <label>Image URL</label>
-                <input
-                    type="url"
-                    {...register('image', { required: 'El campo es requerido' })}
-                    placeholder="Ingresa la URL de tu imagen"
-                />
+                <label>Image</label>
+                <input type="file" accept="image/*" {...register("image")} />
                 {errors.image && <p className="error-message">{errors.image.message}</p>}
             </div>
 
-            <div>
-                <label>Rol</label>
-                <select {...register('role', { required: 'El campo es requerido' })}>
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-                {errors.role && <p className="error-message">{errors.role.message}</p>}
-            </div>
-
-            <button type="submit">Register</button>
+            <button type="submit">Registro</button>
         </form>
     );
 }

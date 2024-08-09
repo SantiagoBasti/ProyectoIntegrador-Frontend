@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useForm } from 'react-hook-form';
-import './AdminUsers.css';
 import Icon from 'react-icons-kit';
 import { bin, pencil } from "react-icons-kit/icomoon";
 import { formatDateUser } from '../../services/utils/DateUser';
+import useApi from '../../services/interceptor/interceptor'; 
+import './AdminUsers.css';
+import Pagination from '../../components/pagination/Pagination';
+
 
 export default function AdminUsers() {
-  const URL = `https://665e339a1e9017dc16ef5241.mockapi.io/`;
+  const api = useApi();
   const defaultFormValues = {
     id: "",
     fullname: "",
@@ -22,122 +24,153 @@ export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [formContact, setFormContact] = useState(defaultFormValues);
 
+  const [totalItems, setTotalItems] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 5;
+
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
     defaultValues: formContact
   });
 
+
+
+ 
   useEffect(() => {
-    getContactList();
-  }, []);
+    getContactList(currentPage, itemsPerPage);
+  }, [currentPage]);
 
   useEffect(() => {
     reset(formContact);
   }, [formContact, reset]);
+  
 
-  async function getContactList() {
+  async function getContactList(page, limit) {
     try {
-      const { data } = await axios.get(`${URL}users`);
-      setUsers(data);
+      const { data } = await api.get(`/users?page=${page}&limit=${limit}`);
+      setUsers(data.users);
+      setTotalItems(data.total);
     } catch (error) {
+      console.log(error)
       Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Hubo un error al obtener los contactos",
-      });
-    }
-  }
-
-  const handleFormSubmit = (data) => {
-    const newContact = {
-      fullname: data.fullname,
-      bornDate: new Date(data.bornDate).getTime(),
-      email: data.email,
-      image: data.image,
-      location: data.location,
-      password: data.password,
-    };
-
-    if (formContact.id) {
-      updateContact({ ...newContact, id: formContact.id });
-    } else {
-      createNewContact(newContact);
-    }
-  };
-
-  async function updateContact(contacto) {
-    try {
-      await axios.put(`${URL}users/${contacto.id}`, contacto);
-      getContactList();
-      setFormContact(defaultFormValues);
-      Swal.fire({
-        icon: "success",
-        title: "Éxito",
-        text: "El usuario se editó correctamente",
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Hubo un error al obtener los usuarios',
         confirmButtonColor: "rgb(218, 54, 74)"
       });
-    } catch (error) {
-      Swal.fire("Error", "No se pudo actualizar el contacto", "error");
     }
   }
 
-  async function createNewContact(contacto) {
-    try {
-      const response = await axios.post(`${URL}users`, contacto);
+const handleFormSubmit = async (data) => {
+  const formData = new FormData();
+  formData.append("fullname", data.fullname);
+  formData.append("bornDate", new Date(data.bornDate).toISOString());
+  formData.append("email", data.email);
+  formData.append("location", data.location);
+  formData.append("password", data.password);
+
+  if (data.image && data.image[0]) {
+      formData.append("user", data.image[0]);
+  }
+
+  if (formContact._id) {
+      await updateContact({ formData, id: formContact._id });
+  } else {
+      await createNewContact(formData);
+  }
+};
+
+async function updateContact({ formData, id }) {
+  try {
+      await api.put(`/users/${id}`, formData);
+      await getContactList(currentPage, itemsPerPage);
+      setFormContact(defaultFormValues);
+      Swal.fire({
+          icon: "success",
+          title: "Éxito",
+          text: "El usuario se editó correctamente",
+          confirmButtonColor: "rgb(218, 54, 74)"
+      });
+  } catch (error) {
+      console.error(error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo actualizar el usuario.',
+          confirmButtonColor: 'rgb(218,54,74)',
+      });
+  }
+}
+
+async function createNewContact(formData) {
+  try {
+      const response = await api.post(`/users`, formData);
       setUsers([...users, response.data]);
       setFormContact(defaultFormValues);
       Swal.fire({
-        icon: "success",
-        title: "Éxito",
-        text: "El usuario se agregó correctamente",
-        confirmButtonColor: "rgb(218, 54, 74)"
+          icon: "success",
+          title: "Éxito",
+          text: "El usuario se agregó correctamente",
+          confirmButtonColor: "rgb(218, 54, 74)"
       });
-    } catch (error) {
-      Swal.fire("Error", "No se pudo crear el contacto", "error");
-    }
+  } catch (error) {
+      console.error(error);
+      Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'No se pudo crear el usuario.',
+          confirmButtonColor: 'rgb(218,54,74)',
+      });
   }
+}
 
-function handleDelete(id) {
+async function handleDelete(id) {
     Swal.fire({
-      title: "Eliminar Usuario",
-      text: "Realmente desea eliminar el usuario",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "rgb(218, 54, 74)",
-      confirmButtonText: "Borrar",
+        title: "Eliminar Usuario",
+        text: "Realmente desea eliminar el usuario",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "rgb(218, 54, 74)",
+        confirmButtonText: "Borrar",
     }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(`${URL}users/${id}`);
-          getContactList();
-          Swal.fire({
-            title: "Éxito",
-            text: "El usuario se eliminó correctamente",
-            icon: "success",
-            confirmButtonColor: "rgb(218, 54, 74)" 
-          });
-        } catch (error) {
-          Swal.fire("Error", "No se pudo eliminar el contacto", "error");
+        if (result.isConfirmed) {
+            try {
+                await api.delete(`/users/${id}`);
+                await getContactList(currentPage, itemsPerPage);
+                Swal.fire({
+                    title: "Éxito",
+                    text: "El usuario se eliminó correctamente",
+                    icon: "success",
+                    confirmButtonColor: "rgb(218, 54, 74)" 
+                });
+            } catch (error) {
+            console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo eliminar el usuario.',
+                confirmButtonColor: 'rgb(218,54,74)',
+            });
         }
-      }
+        }
     });
-  }
+}
 
-  function handleEdit(contact) {
+function handleEdit(contact) {
     setFormContact({
-      ...contact,
-      bornDate: new Date(contact.bornDate).toISOString().split('T')[0]
+        ...contact,
+        bornDate: new Date(contact.bornDate).toISOString().split('T')[0]
     });
     for (const key in contact) {
-      setValue(key, contact[key]);
+        setValue(key, contact[key]);
     }
-  }
+}
 
   return (
     <>
       <div className="contact-list-container">
 
         <div className="contact-form-wrapper">
-          <h1>{formContact.id ? "Editar contacto" : "Añadir contacto"}</h1>
+          <h1>{formContact._id ? "Editar contacto" : "Añadir contacto"}</h1>
           <form className="contact-form" onSubmit={handleSubmit(handleFormSubmit)}>
             <input type="hidden" name="id" />
 
@@ -167,16 +200,6 @@ function handleDelete(id) {
                 {...register('email', { required: 'El correo electrónico es requerido' })}
               />
               {errors.email && <span className='error-message'>{errors.email.message}</span>}
-            </div>
-
-            <div className="input-group">
-              <label htmlFor="password">Contraseña</label>
-              <input
-                type="password"
-                placeholder="Ingrese la contraseña"
-                {...register('password', { required: 'La contraseña es requerida' })}
-              />
-              {errors.password && <span className='error-message'>{errors.password.message}</span>}
             </div>
 
             <div className="input-group">
@@ -217,8 +240,8 @@ function handleDelete(id) {
             </div>
 
             <div className="input-group">
-            <button type="submit" className={formContact.id ? "edit-btn" : "add-button"}>
-            {formContact.id ? "Editar contacto" : "Añadir contacto"}
+            <button type="submit" className={formContact._id ? "edit-btn" : "add-button"}>
+            {formContact._id ? "Editar contacto" : "Añadir contacto"}
             </button>
             </div>
           </form>
@@ -241,9 +264,13 @@ function handleDelete(id) {
               </thead>
               <tbody>
                 {users.map((usuario) => (
-                  <tr key={usuario.id} className="contact">
+                  <tr key={usuario._id} className="contact">
                     <td className="contact-image-wrapper">
-                      <img className="contact-image" src={usuario.image} alt={usuario.fullname} />
+                        <img
+                        src={`http://localhost:3000/image/users/${usuario.image}`}
+                        alt={usuario.fullname}
+                        className="contact-image"
+                        />
                     </td>
                     <td className="contact-fullname">{usuario.fullname}</td>
                     <td className="contact-email">{usuario.email}</td>
@@ -253,7 +280,7 @@ function handleDelete(id) {
                       <button className='edit' onClick={() => handleEdit(usuario)}>
                         <Icon icon={pencil} />
                       </button>
-                      <button className="danger" onClick={() => handleDelete(usuario.id)}>
+                      <button className="danger" onClick={() => handleDelete(usuario._id)}>
                         <Icon icon={bin} />
                       </button>
                     </td>
@@ -261,8 +288,15 @@ function handleDelete(id) {
                 ))}
               </tbody>
             </table>
+            <Pagination
+            totalItems={totalItems}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            onPageChange={(page) => setCurrentPage(page)}
+          />
           </div>
         </div>
+
       </div>
     </>
   );

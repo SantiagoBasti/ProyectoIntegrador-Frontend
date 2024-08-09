@@ -43,9 +43,13 @@ export const UserProvider = ({ children }) => {
         }
     };
 
+
+    //Tiempo que expira el Token y saca al usuario de la sesion 1H 
     const interval = setInterval(checkTokenValidity, 3600000); 
     return () => clearInterval(interval);
 }, [token]);
+
+
 
   async function login(data) {
     try {
