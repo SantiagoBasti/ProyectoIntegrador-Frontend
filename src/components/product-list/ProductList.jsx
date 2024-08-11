@@ -1,32 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "../productcard/ProductCard";
-import { useEffect } from "react";
-import axios from "axios";
 import "./ProductList.css";
-
-const URL = "https://665e339a1e9017dc16ef5241.mockapi.io";
+import useApi from "../../services/interceptor/interceptor";
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);
-  // Generar un estado para nuestros productos []
-  // UseEffect hacer una petición controlada
+  const api = useApi();
+
   useEffect(() => {
-    getProducts();
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        const response = await api.get("/products");
+        console.log("Respuesta de la API de productos:", response.data); 
 
-  async function getProducts() {
-    try {
-      const response = await axios.get(`${URL}/products`);
+        if (response.data && Array.isArray(response.data.products)) {
+          setProducts(response.data.products);
+        } else {
+          console.error("Formato de respuesta inesperada:", response.data);
+        }
+      } catch (error) {
+        console.error("Error al recuperar productos:", error);
+      }
+    };
 
-      const productsAPI = response.data;
-
-      console.log(productsAPI);
-
-      setProducts(productsAPI);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+    fetchProducts();
+  }, [api]);
 
   return (
     <div>
@@ -34,7 +32,7 @@ export default function ProductList() {
 
       <div className="product-card-container">
         {products.map((prod) => (
-          <ProductCard key={prod.id} product={prod} />
+          <ProductCard key={prod._id} product={prod} />
         ))}
       </div>
     </div>

@@ -1,122 +1,166 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./AdminProduct.css";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { formatTimestampToInputDate } from "../../services/utils/FormatDate";
 import Swal from "sweetalert2";
+import { formatTimestampToInputDate } from "../../services/utils/FormatDate";
+import useApi from '../../services/interceptor/interceptor'; 
 import { FormatPrice } from "../../services/utils/FormatPrice";
-
-const URL = "https://665e339a1e9017dc16ef5241.mockapi.io";
+import "./AdminProduct.css";
 
 export default function AdminProduct() {
+  const api = useApi();
+
   const [products, setProducts] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
+  const [categories, setCategories] = useState([])
 
   const { register, setValue, handleSubmit, reset, formState: { errors } } = useForm();
 
   useEffect(() => {
-    getProduct();
+      getProduct();
+      getCategories();
   }, []);
+
+  
+
+  async function getCategories(){
+    try{
+
+      const response = await api.get(`/categories`)
+
+      const categoriesDB = response.data.categories
+
+      setCategories(categoriesDB)
+
+    }catch(error){
+      console.log("Error al obtener categorias", error)
+    }
+  }
 
   async function getProduct() {
     try {
-      const response = await axios.get(`${URL}/products`);
-      const productos = response.data;
-      setProducts(productos);
-      console.log(response);
+      const response = await api.get(`/products`);
+
+      const { products } = response.data;
+      setProducts(products);
+
+
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function onSubmit(data) {
-    data.createdAt = new Date(data.createdAt).getTime();
-    data.price = +data.price;
+  function onSubmit(data) {
+    console.log(data)
+    const formData = new FormData();
+    formData.append("id", data.id);
+    formData.append("name", data.name);
+    formData.append("price", +data.price);
+    formData.append("description", data.description);
+    formData.append("productImage", data.productImage.length ? data.productImage[0] : undefined);
+    formData.append("createdAt", new Date(data.createdAt).getTime());
+    formData.append("category", data.category);
   
-    if (isEditing) {
-      await updateProductData(data);
+    if (data.id) {
+      updateProductData(formData);
     } else {
-      await createProduct(data);
+      createProduct(formData);
+    }
+  }
+
+
+  async function updateProductData(productFormData) {
+    try {
+      const id = productFormData.get('id');
+      
+  
+     const response = await api.put(`/products/${id}`, productFormData)
+
+      console.log(response.data)
+
+      getProduct();
+      setIsEditing(false);
+      reset();
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'El producto se editó correctamente',
+        icon: 'success',
+        confirmButtonColor: "rgb(218, 54, 74)"
+      });
+    } catch (error) {
+      console.error(error);
     }
   }
   
-  async function updateProductData(product) {
-    try {
-      await axios.put(`${URL}/products/${product.id}`, product);
-      getProduct();
-      Swal.fire({
-        icon: "success",
-        title: "Producto actualizado",
-        showConfirmButton: false,
-        timer: 1500
-      });
-      reset(); 
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsEditing(false); 
-    }
-  }
   
   async function createProduct(product) {
     try {
-      await axios.post(`${URL}/products`, product);
-      getProduct(); 
-      reset(); 
+      const newProduct = 
+      await api.post(`products`, product);
+  
+      
+      getProduct()
+      console.log(newProduct.data)
+      reset();
+      Swal.fire({
+        title: '¡Éxito!',
+        text: 'Producto agregado correctamente',
+        icon: 'success',
+        confirmButtonColor: "rgb(218, 54, 74)"
+      });
+
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+  
+  async function deleteProduct(id) {
+    try {
+      
+      const result = await Swal.fire({
+        title: '¿Estás seguro?',
+        text: "Realmente desea eliminar el producto",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: "rgb(218, 54, 74)",
+        confirmButtonText: 'Sí, eliminar'
+      });
+  
+      if (result.isConfirmed) {
+        
+        await api.delete(`/products/${id}`);
+        
+        getProduct();
+        
+        Swal.fire({
+          title: '¡Eliminado!',
+          text: 'El producto ha sido eliminado.',
+          icon: 'success',
+          confirmButtonColor: "rgb(218, 54, 74)"
+        });
+      }
     } catch (error) {
       console.log(error);
     }
   }
-
-  async function deleteProduct(id) {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: 'Deseas eliminarlo',
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      customClass: {
-        confirmButton: "swal2-ok-button"
-      }
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        try {
-          await axios.delete(`${URL}/products/${id}`);
-          getProduct();
-          Swal.fire({
-            title: "¡Eliminado!",
-            text: "El producto ha sido eliminado.",
-            icon: "success",
-            confirmButtonColor: "rgb(218,54,74)"
-          });
-        } catch (error) {
-          console.log(error);
-        }
-      }
-    });
-  }
+  
 
   function handleEditProduct(producto) {
+    console.log("Editar producto", producto)
     setIsEditing(true);
 
-    setValue("id", producto.id);
+    setValue("id", producto._id);
     setValue("name", producto.name);
     setValue("price", producto.price);
-    setValue("image", producto.image);
-    setValue("category", producto.category);
+
+    setValue("category", producto.category._id);
     setValue("description", producto.description);
     setValue("createdAt", formatTimestampToInputDate(producto.createdAt));
-
-    if (!isEditing) {
-        reset();
-      }
+    
   }
-
+  
   return (
     <div className="admin-container">
       <h1>Admin Product</h1>
@@ -152,10 +196,7 @@ export default function AdminProduct() {
           </div>
           <div className="input-group">
             <label>Imagen</label>
-            <input
-              type="url"
-              {...register("image", { required: true })}
-            />
+            <input type="file" accept="image/*" {...register("productImage") } />
             {errors.image && (
               <span className="input-error">El campo es requerido</span>
             )}
@@ -164,9 +205,13 @@ export default function AdminProduct() {
             <label>Categoria</label>
             <select {...register("category", { required: true })}>
               <option value="">Tipo de motocicleta</option>
-              <option value="HyperNaked">HyperNaked</option>
-              <option value="SuperDeportiva">SuperDeportiva</option>
-              <option value="Adventure">Adventure</option>
+              {
+                categories.map(category => (
+                  <option value={category._id} key={category._id}>
+                    {category.viewValue}
+                  </option>
+                ))
+              }
             </select>
             {errors.category && (
               <span className="input-error">El campo es requerido</span>
@@ -209,15 +254,16 @@ export default function AdminProduct() {
           </thead>
           <tbody>
             {products.map((product) => (
-              <tr className="admin-table-row" key={product.id}>
+              <tr className="admin-table-row" key={product._id}>
                 <td className="image">
-                  <img src={product.image} alt={product.name} />
+                <img 
+                  src={`http://localhost:3000/image/products/${product.productImage}`} alt={product.name} />
                 </td>
                 <td className="name">
                   <p>{product.name}</p>
                 </td>
                 <td className="category">
-                  <p>{product.category}</p>
+                  <p>{product.category.name}</p>
                 </td>
                 <td className="description">
                   <p className='text-description' title={product.description}>{product.description}
@@ -230,7 +276,7 @@ export default function AdminProduct() {
                   <button className="action-btn" onClick={() => handleEditProduct(product)}>
                     <FontAwesomeIcon icon={faEdit} />
                   </button>
-                  <button className="action-btn btn-danger" onClick={() => deleteProduct(product.id)}>
+                  <button className="action-btn btn-danger" onClick={() => deleteProduct(product._id)}>
                     <FontAwesomeIcon icon={faTrash} />
                   </button>
                 </td>

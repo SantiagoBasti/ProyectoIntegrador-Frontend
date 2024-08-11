@@ -27,6 +27,7 @@ const useApi = () => {
                         title: "Error",
                         text: "Sesión vencida o inválida",
                         icon: "error",
+                        confirmButtonColor: "rgb(218, 54, 74)",
                         timer: 1500
                     }).then(() => {
                         logout();
@@ -46,7 +47,3 @@ const useApi = () => {
 };
 
 export default useApi;
-
-
-
-// Conectar con el adminProduct o adminUser

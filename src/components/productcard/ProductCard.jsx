@@ -13,16 +13,16 @@ export default function ProductCard({ product }) {
   const { addOrderItem } = useOrder();
 
   const handleDetailClick = () => {
-    navigate(`/product-detail/${product.id}`);
+    navigate(`/product-detail/${product._id}`);
   };
 
   return (
     <article className="product-card">
       <div className="card-container">
         <div className="image-card">
-          <img src={product.image} alt={product.name} />
+          <img src={`http://localhost:3000/image/products/${product.productImage}`} alt={product.name} />
           <div className="category-card">
-            {product.category}<small>MODELO 2024</small>
+            {product.category.name}<small>MODELO 2024</small>
           </div>
           <div className="motorcycle-card">
             <h2>{product.name}</h2>
