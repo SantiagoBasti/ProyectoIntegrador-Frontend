@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useContext, createContext } from "react";
+import { useUser } from "./UserContext";
+import useApi from "../services/interceptor/interceptor";
 import Swal from "sweetalert2";
 
 const OrderContext = createContext();
@@ -7,55 +9,76 @@ const OrderContext = createContext();
 export const useOrder = () => useContext(OrderContext);
 
 export const OrderProvider = ({ children }) => {
+  const {user, token} = useUser();
+  const api = useApi()
+
   const [order, setOrder] = useState(
+
     JSON.parse(localStorage.getItem("order")) || []
   );
 
-  const [sidebarToggle, setSidebarToggle] = useState(false);
   const [count, setCount] = useState(0);
-  const [total, setTotal] = useState(0);
+
+  const [sidebarToggle, setSidebarToggle] = useState(false);
 
   useEffect(() => {
-    let totalCount = 0;
-    order.forEach((prod) => {
-      totalCount += prod.quantity;
-    });
-    setCount(totalCount);
+
     localStorage.setItem("order", JSON.stringify(order));
-    calculateTotal();
+
+    calculateTotal()
+    calculateCount()
   }, [order]);
 
+  const [total, setTotal] = useState(0);
+
   function addOrderItem(producto) {
-    const product = order.find((prod) => prod.id === producto.id);
+
+    const product = order.find((prod) => prod._id === producto._id);
+
     if (product) {
-      handleChangeQuantity(product.id, product.quantity + 1);
+      handleChangeQuantity(product._id, product.quantity + 1);
     } else {
-      const isProductInCart = order.some((prod) => prod.id === producto.id);
-      if (!isProductInCart) {
-        producto.quantity = 1;
-        setOrder([...order, producto]);
-      }
+
+      producto.quantity = 1
+
+
+      setOrder([...order, producto]);
+
     }
   }
 
   function calculateTotal() {
     let totalCount = 0;
+
     order.forEach((prod) => {
       totalCount += prod.price * prod.quantity;
     });
-    setTotal(totalCount);
+
+    setTotal(totalCount)
+  }
+
+  function calculateCount(){
+    let count = 0;
+
+    order.forEach((prod) => {
+      count += prod.quantity;
+    });
+    setCount(count);
+
   }
 
   function handleChangeQuantity(id, quantity) {
-    quantity = Math.max(0, quantity);
+    // quantity = Math.max(0, quantity);
 
-    const updateOrder = order.map((item) => {
-      if (item.id === id) {
-        item.quantity = quantity;
+    const updProducts = order.map((item) => {
+      if (item._id === id) {
+        item.quantity = +quantity;
+
       }
       return item;
     });
-    setOrder(updateOrder);
+
+    setOrder(updProducts);
   }
 
   function removeItem(id) {
@@ -70,11 +93,58 @@ export const OrderProvider = ({ children }) => {
       confirmButtonColor: "red",
     }).then((result) => {
       if (result.isConfirmed) {
-        const updOrder = order.filter((prod) => prod.id !== id);
-        setOrder(updOrder);
+        const products = order.filter((prod) => prod._id !== id);
+
+
+        setOrder(products);
       }
     });
   }
+
+  async function postOrder(){
+    try{
+      if(!user || !token){
+        Swal.fire({
+          title: "Error",
+          text:"Debe estar logueado para realizar su compra",
+          icon: "warning",
+          timer: 4000
+        })
+        return
+      }
+      const products = order.map(item => {
+        return{
+          quantity: item.quantity,
+          product: item._id,
+          price: item.price,
+        }
+      })
+
+      const nuevaOrden = {
+        total,
+        user: user._id,
+        products
+      }
+
+    
+      const response = await api.post("/orders", nuevaOrden);
+      
+      if(!response) throw new Error("Error al crear la orden")
+      Swal.fire("Orden Creada", "La compra se creo correctamente", "success")
+
+      setOrder([])
+
+      const orders = await api.get(`/orders/${user._id}`);
+
+      console. log (orders.data)
+
+    } catch(error) {
+      console.log(error)
+
+      Swal.fire("Error, Error al crear orden", 'error')
+    }
+  }
+
 
   function toggleSidebarOrder() {
     setSidebarToggle(!sidebarToggle);
@@ -91,6 +161,7 @@ export const OrderProvider = ({ children }) => {
         handleChangeQuantity,
         removeItem,
         toggleSidebarOrder,
+        postOrder
       }}
     >
       {children}

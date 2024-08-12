@@ -26,7 +26,7 @@ export default function AdminUsers() {
 
   const [totalItems, setTotalItems] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
-  const itemsPerPage = 5;
+  const itemsPerPage = 4;
 
   const { register, handleSubmit, setValue, reset, formState: { errors } } = useForm({
     defaultValues: formContact

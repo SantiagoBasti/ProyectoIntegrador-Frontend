@@ -41,6 +41,7 @@ const ProductDetail = () => {
 
   return (
     <>
+    <div className='container-main'>
       <div className="container-motorcycle">
         <div className="moto-container">
           <img 
@@ -63,6 +64,7 @@ const ProductDetail = () => {
           </div>
         </div>
       </div>
+    </div>
       
       {modalDescription && (
         <div className="modal-motorcycle">

@@ -5,7 +5,7 @@ import { faTrashCan } from "@fortawesome/free-regular-svg-icons";
 import { FormatPrice } from "../../services/utils/FormatPrice";
 
 export default function OrderSidebar() {
-  const { order, total, handleChangeQuantity, removeItem, sidebarToggle } = useOrder();
+  const { order, total, handleChangeQuantity, removeItem, sidebarToggle, postOrder } = useOrder();
 
   return (
     <div className={`order-sidebar ${sidebarToggle ? 'active' : ''}`}>
@@ -14,19 +14,19 @@ export default function OrderSidebar() {
       </div>
       <div className="order-list">
         {order.map((product) => (
-          <div className="order-item" key={product.id}>
+          <div className="order-item" key={product._id}>
             <div className="order-item-details">
-              <img className="order-image" src={product.image ?? "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"} alt="" />
+              <img className="order-image" src={`http://localhost:3000/image/products/${product.productImage}` ?? "https://nayemdevs.com/wp-content/uploads/2020/03/default-product-image.png"} alt="" />
               <div className="order-info">
                 <div className="order-item-name" title={product.name}>
                   {product.name}
                 </div>
                 <div className="order-quantity">
 
-                <input type="numbre" className="order-quantity-input" value={product.quantity} onChange={(evt) => handleChangeQuantity(product.id, evt.target.value)} min={1}/>
+                <input type="numbre" className="order-quantity-input" value={product.quantity} onChange={(evt) => handleChangeQuantity(product._id, evt.target.value)} min={1}/>
                 <div className="order-price"><FormatPrice price={product.price * product.quantity} /> <small>COP</small>
                 </div>
-                  <FontAwesomeIcon icon={faTrashCan} title="Eliminar Producto" className="trash-icon" onClick={() => removeItem(product.id)} />
+                  <FontAwesomeIcon icon={faTrashCan} title="Eliminar Producto" className="trash-icon" onClick={() => removeItem(product._id)} />
                 </div>
               </div>
             </div>
@@ -40,7 +40,7 @@ export default function OrderSidebar() {
             Total: <FormatPrice price={total} />
           </div>
         </div>
-        <button className="checkout-button">Realizar Pedido</button>
+        <button className="checkout-button" onClick={()=> postOrder()}>Realizar Pedido</button>
       </div>
     </div>
   );
