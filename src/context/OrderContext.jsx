@@ -68,7 +68,6 @@ export const OrderProvider = ({ children }) => {
   }
 
   function handleChangeQuantity(id, quantity) {
-    // quantity = Math.max(0, quantity);
 
     const updProducts = order.map((item) => {
       if (item._id === id) {
@@ -90,7 +89,7 @@ export const OrderProvider = ({ children }) => {
       showCancelButton: true,
       reverseButtons: true,
       confirmButtonText: "Borrar",
-      confirmButtonColor: "red",
+      confirmButtonColor: "rgb(218, 54, 74)",
     }).then((result) => {
       if (result.isConfirmed) {
         const products = order.filter((prod) => prod._id !== id);
@@ -101,51 +100,67 @@ export const OrderProvider = ({ children }) => {
     });
   }
 
-  async function postOrder(){
-    try{
-      if(!user || !token){
+  async function postOrder() {
+    try {
+      if (!user || !token) {
         Swal.fire({
           title: "Error",
-          text:"Debe estar logueado para realizar su compra",
+          text: "Debe estar logueado para realizar su compra",
           icon: "warning",
+          background: "rgb(218, 54, 74)",
+          color: "rgb(255, 255, 255)",
+          confirmButtonColor: "rgb(218, 54, 74)",
           timer: 4000
-        })
-        return
+        });
+        return;
       }
+  
       const products = order.map(item => {
-        return{
+        return {
           quantity: item.quantity,
           product: item._id,
           price: item.price,
-        }
-      })
-
+        };
+      });
+  
       const nuevaOrden = {
         total,
         user: user._id,
         products
-      }
-
-    
+      };
+  
       const response = await api.post("/orders", nuevaOrden);
-      
-      if(!response) throw new Error("Error al crear la orden")
-      Swal.fire("Orden Creada", "La compra se creo correctamente", "success")
-
-      setOrder([])
-
+  
+      if (!response) throw new Error("Error al crear la orden");
+  
+      Swal.fire({
+        title: "Orden Creada",
+        text: "La compra se creó correctamente",
+        icon: "success",
+        background: "rgb(0,0,0)", 
+        color: "rgb(255, 255, 255)", 
+        confirmButtonColor: "rgb(218, 54, 74)"
+      });
+  
+      setOrder([]);
+  
       const orders = await api.get(`/orders/${user._id}`);
-
-      console. log (orders.data)
-
-    } catch(error) {
-      console.log(error)
-
-      Swal.fire("Error, Error al crear orden", 'error')
+      console.log(orders.data);
+  
+    } catch (error) {
+      console.log(error);
+  
+      Swal.fire({
+        title: "Error",
+        text: "Error al crear orden",
+        icon: "error",
+        background: "rgb(218, 54, 74)", 
+        color: "rgb(255, 255, 255)",
+        confirmButtonColor: "rgb(218, 54, 74)"
+      });
     }
   }
-
-
+  
   function toggleSidebarOrder() {
     setSidebarToggle(!sidebarToggle);
   }
